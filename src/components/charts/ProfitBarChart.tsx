@@ -34,7 +34,7 @@ export default function ProfitBarChart({ report }: ProfitBarChartProps) {
         <Tooltip
           contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
           labelStyle={{ color: '#f3f4f6' }}
-          formatter={(value: number) => [`₹${value.toLocaleString('en-IN')}`, '']}
+          formatter={(value: any) => [`₹${Number(value).toLocaleString('en-IN')}`, '']}
         />
         <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
           {data.map((entry, index) => (

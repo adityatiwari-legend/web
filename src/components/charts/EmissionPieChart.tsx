@@ -38,7 +38,7 @@ export default function EmissionPieChart({ report }: EmissionPieChartProps) {
           outerRadius={100}
           paddingAngle={5}
           dataKey="value"
-          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+          label={({ name, percent }: any) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
         >
           {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -48,7 +48,7 @@ export default function EmissionPieChart({ report }: EmissionPieChartProps) {
           contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
           labelStyle={{ color: '#f3f4f6' }}
           itemStyle={{ color: '#d1d5db' }}
-          formatter={(value: number) => [`${value.toFixed(4)} t CO2`, '']}
+          formatter={(value: any) => [`${Number(value).toFixed(4)} t CO2`, '']}
         />
         <Legend
           wrapperStyle={{ color: '#9ca3af' }}

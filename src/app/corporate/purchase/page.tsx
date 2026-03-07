@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getCreditBatches, getBatchById, purchaseCredits } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { FiCheckCircle, FiShoppingCart } from 'react-icons/fi';
 
-export default function PurchasePage() {
+function PurchaseForm() {
   const searchParams = useSearchParams();
   const preselectedBatch = searchParams.get('batch');
   const queryClient = useQueryClient();
@@ -217,5 +217,13 @@ export default function PurchasePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PurchasePage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading purchase options...</div>}>
+      <PurchaseForm />
+    </Suspense>
   );
 }

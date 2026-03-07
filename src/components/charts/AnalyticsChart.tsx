@@ -52,7 +52,7 @@ export default function AnalyticsChart({ data }: { data: EmissionData }) {
             <Tooltip
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               itemStyle={{ color: '#1f2937', fontWeight: 500 }}
-              formatter={(value: number) => [`${value.toFixed(1)} tCO₂e`, 'Emissions']}
+              formatter={(value: any) => [`${Number(value).toFixed(1)} tCO₂e`, 'Emissions']}
             />
             <Legend 
               verticalAlign="bottom" 

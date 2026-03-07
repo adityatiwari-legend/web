@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/providers/AuthProvider';
-import { Search, Bell, UserMenu } from 'lucide-react';
+import { Search, Bell, User } from 'lucide-react';
 import { FiUser } from 'react-icons/fi';
 
 export default function TopNavbar() {
