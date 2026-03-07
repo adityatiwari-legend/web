@@ -1,72 +1,76 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { PieChart as PieChartIcon } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { TrendingUp } from 'lucide-react';
 
-interface EmissionData {
-  fertilizer: number;
-  diesel: number;
-  electricity: number;
+interface AnalyticsData {
+  month: string;
+  sequestration: number;
 }
 
-const COLORS = ['#ef4444', '#f59e0b', '#3b82f6'];
+const defaultData = [
+  { month: 'Jan', sequestration: 12 },
+  { month: 'Feb', sequestration: 19 },
+  { month: 'Mar', sequestration: 15 },
+  { month: 'Apr', sequestration: 25 },
+  { month: 'May', sequestration: 32 },
+  { month: 'Jun', sequestration: 28 },
+  { month: 'Jul', sequestration: 38 },
+];
 
-export default function AnalyticsChart({ data }: { data: EmissionData }) {
-  const chartData = [
-    { name: 'Fertilizer', value: data.fertilizer || 10 },
-    { name: 'Diesel', value: data.diesel || 5 },
-    { name: 'Electricity', value: data.electricity || 8 },
-  ];
-
-  const total = chartData.reduce((sum, item) => sum + item.value, 0);
+export default function AnalyticsChart({ data }: { data?: AnalyticsData[] }) {
+  const chartData = data && data.length > 0 ? data : defaultData;
 
   return (
     <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Emissions Breakdown</h3>
-          <p className="text-sm text-gray-500 mt-0.5">Where your emissions come from</p>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Carbon Sequestration Trends</h3>
+          <p className="text-sm text-gray-500 mt-0.5">Monthly performance data</p>
         </div>
-        <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-xl">
-          <PieChartIcon className="h-5 w-5 text-gray-400" />
+        <div className="p-2 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl">
+          <TrendingUp className="h-5 w-5 text-emerald-500" />
         </div>
       </div>
 
-      <div className="flex-1 min-h-[200px] relative">
+      <div className="flex-1 min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={chartData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              paddingAngle={5}
-              dataKey="value"
-              stroke="none"
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorSequestration" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#22C55E" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+            <XAxis 
+              dataKey="month" 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#6B7280', fontSize: 12 }} 
+              dy={10}
+            />
+            <YAxis 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#6B7280', fontSize: 12 }} 
+            />
             <Tooltip
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              itemStyle={{ color: '#1f2937', fontWeight: 500 }}
-              formatter={(value: any) => [`${Number(value).toFixed(1)} tCO₂e`, 'Emissions']}
+              itemStyle={{ color: '#1f2937', fontWeight: 600 }}
+              formatter={(value: any) => [`${Number(value).toFixed(1)} tCO₂e`, 'Sequestration']}
             />
-            <Legend 
-              verticalAlign="bottom" 
-              height={36}
-              iconType="circle"
-              wrapperStyle={{ fontSize: '13px', paddingTop: '10px' }}
+            <Area 
+              type="monotone" 
+              dataKey="sequestration" 
+              stroke="#22C55E" 
+              strokeWidth={3}
+              fillOpacity={1} 
+              fill="url(#colorSequestration)" 
+              animationDuration={1500}
             />
-          </PieChart>
+          </AreaChart>
         </ResponsiveContainer>
-        {/* Center Text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mb-8">
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">{total.toFixed(1)}</span>
-          <span className="text-xs text-gray-500">tCO₂e</span>
-        </div>
       </div>
     </div>
   );

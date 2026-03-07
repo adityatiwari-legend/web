@@ -5,11 +5,11 @@ import { getCarbonReports, getProfitReports, getTotalCredits } from '@/lib/api';
 
 // New modern components
 import HeroStatsCard from '@/components/ui/HeroStatsCard';
-import ImpactCard from '@/components/ui/ImpactCard';
 import FarmTable from '@/components/ui/FarmTable';
 import AnalyticsChart from '@/components/charts/AnalyticsChart';
 import CreditChart from '@/components/charts/CreditChart';
 import PerformanceFunnel from '@/components/charts/PerformanceFunnel';
+import ActivityPanel from '@/components/ui/ActivityPanel';
 
 export default function FarmerDashboard() {
   const { data: creditsData } = useQuery({
@@ -38,77 +38,81 @@ export default function FarmerDashboard() {
     ? Math.min(100, Math.max(0, Math.round(50 + (latestCarbon.netCarbon / latestCarbon.carbonAbsorbed) * 50)))
     : 85;
 
-  // Extract emission data for pie chart
-  const emissionData = latestCarbon ? {
-    fertilizer: latestCarbon.emissionsDetail.fertilizer,
-    diesel: latestCarbon.emissionsDetail.diesel,
-    electricity: latestCarbon.emissionsDetail.electricity
-  } : {
-    fertilizer: 45,
-    diesel: 30,
-    electricity: 25
-  };
+  // Extract emission data for charts - Mocking trend data for now since API might not return it
+  const analyticsData = [
+    { month: 'Jan', sequestration: 12 },
+    { month: 'Feb', sequestration: 18 },
+    { month: 'Mar', sequestration: 15 },
+    { month: 'Apr', sequestration: 22 },
+    { month: 'May', sequestration: 35 },
+    { month: 'Jun', sequestration: 42 },
+  ];
 
-  // Mock credit distribution data
+  // Mock credit distribution data matching prompt crops
   const creditsDataByCrop = [
     { crop: 'wheat', credits: 120 },
     { crop: 'rice', credits: 85 },
     { crop: 'soybean', credits: 40 },
+    { crop: 'maize', credits: 30 },
   ];
 
   // Mock funnel data
   const funnelData = {
-    registered: 12,
-    calculated: 10,
-    generated: 8,
-    aggregated: 5,
-    sold: 3
+    registered: 125,
+    calculated: 98,
+    generated: 75,
+    aggregated: 60,
+    sold: 45
   };
 
-  // Mock farm table data, map from reports if needed in future
+  // Mock farm table data matching prompt columns
   const farmsListData = [
-    { id: '1', name: 'Green Valley', crop: 'wheat', creditsGenerated: 12.5, carbonReduction: 4.2, estimatedRevenue: 25000 },
-    { id: '2', name: 'Sunny Acres', crop: 'rice', creditsGenerated: 18.2, carbonReduction: 5.8, estimatedRevenue: 36400 },
-    { id: '3', name: 'Riverside Fields', crop: 'soybean', creditsGenerated: 9.8, carbonReduction: 3.1, estimatedRevenue: 19600 },
+    { id: '1', name: 'Green Valley', crop: 'Wheat', landArea: 12.5, creditsGenerated: 125, carbonReduction: 15.2, estimatedEarnings: 250000 },
+    { id: '2', name: 'Sunny Acres', crop: 'Rice', landArea: 8.2, creditsGenerated: 98, carbonReduction: 11.5, estimatedEarnings: 196000 },
+    { id: '3', name: 'Riverside Fields', crop: 'Soybean', landArea: 15.0, creditsGenerated: 145, carbonReduction: 18.1, estimatedEarnings: 290000 },
+    { id: '4', name: 'Highland Farms', crop: 'Maize', landArea: 10.0, creditsGenerated: 75, carbonReduction: 9.8, estimatedEarnings: 150000 },
   ];
 
   return (
-    <div className="space-y-6 max-w-[1600px] mx-auto">
+    <div className="space-y-6 max-w-[1600px] mx-auto p-6 md:p-8">
       
-      {/* 1. Hero Stats Card */}
+      {/* 1. Hero Stats Card - Full Width */}
       <HeroStatsCard 
         totalCredits={Math.max(totalCredits, 150.5)} 
         estimatedIncome={Math.max(estimatedIncome, 125000)} 
         sustainabilityScore={sustainabilityScore} 
       />
 
-      {/* 2. Primary Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-1 border-gray-100 dark:border-gray-800">
-          <AnalyticsChart data={emissionData} />
-        </div>
-        <div className="xl:col-span-1 border-gray-100 dark:border-gray-800">
-          <CreditChart creditsData={creditsDataByCrop} />
-        </div>
-        <div className="xl:col-span-1 border-gray-100 dark:border-gray-800">
-          <ImpactCard 
-            totalCredits={Math.max(totalCredits, 150.5)} 
-            regionsCount={3} 
-            averageScore={sustainabilityScore} 
-          />
-        </div>
-      </div>
+      {/* Main Grid Layout: 3 Columns on Desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left Column (2 cols wide) */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="h-full">
+              {/* Category Analytics Card - Semicircle */}
+              <CreditChart creditsData={creditsDataByCrop} />
+            </div>
+            <div className="h-full">
+              {/* Other Analytics Chart - Area Chart */}
+              <AnalyticsChart data={analyticsData} />
+            </div>
+          </div>
 
-      {/* 3. Secondary Analytics: Table & Funnel */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2">
+          {/* Funnel Analytics */}
+          <PerformanceFunnel data={funnelData} />
+
+          {/* Data Table */}
           <FarmTable farms={farmsListData} />
         </div>
-        <div className="xl:col-span-1">
-          <PerformanceFunnel data={funnelData} />
+
+        {/* Right Column (1 col wide) - Activity Panel */}
+        <div className="lg:col-span-1">
+          <ActivityPanel />
         </div>
       </div>
-      
     </div>
   );
 }
