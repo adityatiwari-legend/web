@@ -42,18 +42,18 @@ const activities = [
 ];
 
 const colorMap: Record<string, string> = {
-  emerald: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
-  blue: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-  amber: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
-  purple: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+  emerald: 'bg-emerald-100 text-emerald-600',
+  blue: 'bg-blue-100 text-blue-600',
+  amber: 'bg-amber-100 text-amber-600',
+  purple: 'bg-purple-100 text-purple-600',
 };
 
 export default function ActivityPanel() {
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 shadow-sm h-full">
+    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recent Activity</h3>
-        <button className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline">View All</button>
+        <h3 className="text-base font-medium text-[#1F2937]">Recent Activity</h3>
+        <button className="text-xs font-semibold text-[#38B26D] hover:underline">View All</button>
       </div>
 
       <div className="space-y-6">
@@ -65,10 +65,10 @@ export default function ActivityPanel() {
                 <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
-                <p className="text-sm font-medium text-gray-900 dark:text-white whitespace-nowrap overflow-hidden text-ellipsis">
+                <p className="text-sm font-medium text-[#1F2937] whitespace-nowrap overflow-hidden text-ellipsis">
                   {activity.message}
                 </p>
-                <p className="text-xs text-gray-500 mb-0.5">{activity.detail}</p>
+                <p className="text-xs text-[#6B7280] mb-0.5">{activity.detail}</p>
                 <p className="text-xs text-gray-400">{activity.time}</p>
               </div>
               <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -79,8 +79,8 @@ export default function ActivityPanel() {
         })}
       </div>
       
-      <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-        <button className="w-full py-2.5 px-4 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-sm font-medium rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors">
+      <div className="mt-6 pt-6 border-t border-gray-100">
+        <button className="w-full py-2.5 px-4 bg-[#38B26D]/10 text-[#38B26D] text-sm font-medium rounded-xl hover:bg-[#38B26D]/20 transition-colors">
           View Activity Log
         </button>
       </div>

@@ -2,16 +2,26 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getCarbonReports, getProfitReports, getTotalCredits } from '@/lib/api';
+import { useKrishiMitraData } from '@/lib/useKrishiMitraData';
 
 // New modern components
 import HeroStatsCard from '@/components/ui/HeroStatsCard';
 import FarmTable from '@/components/ui/FarmTable';
 import AnalyticsChart from '@/components/charts/AnalyticsChart';
-import CreditChart from '@/components/charts/CreditChart';
-import PerformanceFunnel from '@/components/charts/PerformanceFunnel';
-import ActivityPanel from '@/components/ui/ActivityPanel';
+import EnvironmentalImpactChart from '@/components/charts/EnvironmentalImpactChart';
+import CarbonTokenizationCard from '@/components/ui/CarbonTokenizationCard';
+import RecentTradesCard from '@/components/ui/RecentTradesCard';
+
+// ML-powered cards
+import LiveSensorCard from '@/components/ui/LiveSensorCard';
+import IrrigationCard from '@/components/ui/IrrigationCard';
+import CarbonCreditsMLCard from '@/components/ui/CarbonCreditsMLCard';
+import GreenScoreCard from '@/components/ui/GreenScoreCard';
 
 export default function FarmerDashboard() {
+  // ML data from KrishiMitra backend (polls every 5s)
+  const { latestData, connected, lastUpdate } = useKrishiMitraData();
+
   const { data: creditsData } = useQuery({
     queryKey: ['totalCredits'],
     queryFn: () => getTotalCredits().then((r) => r.data.data),
@@ -74,45 +84,69 @@ export default function FarmerDashboard() {
   ];
 
   return (
-    <div className="space-y-6 max-w-[1600px] mx-auto p-6 md:p-8">
+    <div className="space-y-6 pb-20">
       
-      {/* 1. Hero Stats Card - Full Width */}
-      <HeroStatsCard 
-        totalCredits={Math.max(totalCredits, 150.5)} 
-        estimatedIncome={Math.max(estimatedIncome, 125000)} 
-        sustainabilityScore={sustainabilityScore} 
+      {/* 1. Hero Metrics */}
+      <HeroStatsCard
+        totalCredits={Math.max(totalCredits, 150.5)}
+        estimatedIncome={Math.max(estimatedIncome, 125000)}
+        sustainabilityScore={sustainabilityScore}
       />
 
-      {/* Main Grid Layout: 3 Columns on Desktop */}
+      {/* 1.5 ML-Powered Real-Time Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LiveSensorCard
+          sensors={latestData?.sensors ?? null}
+          connected={connected}
+          lastUpdate={lastUpdate}
+        />
+        <IrrigationCard
+          irrigation={latestData?.irrigation ?? null}
+          connected={connected}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CarbonCreditsMLCard
+          carbon={latestData?.carbon ?? null}
+          connected={connected}
+        />
+        <GreenScoreCard
+          greenscore={latestData?.greenscore ?? null}
+          connected={connected}
+        />
+      </div>
+
+      {/* 2. Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column (2 cols wide) */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-full">
-              {/* Category Analytics Card - Semicircle */}
-              <CreditChart creditsData={creditsDataByCrop} />
-            </div>
-            <div className="h-full">
-              {/* Other Analytics Chart - Area Chart */}
-              <AnalyticsChart data={analyticsData} />
-            </div>
-          </div>
-
-          {/* Funnel Analytics */}
-          <PerformanceFunnel data={funnelData} />
-
-          {/* Data Table */}
-          <FarmTable farms={farmsListData} />
+        <div className="lg:col-span-2 h-[400px]">
+          <AnalyticsChart data={analyticsData} />
         </div>
-
-        {/* Right Column (1 col wide) - Activity Panel */}
-        <div className="lg:col-span-1">
-          <ActivityPanel />
+        <div className="lg:col-span-1 h-[400px]">
+          <EnvironmentalImpactChart />
         </div>
       </div>
+
+      {/* 3. Tokenization & Market Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="h-full">
+          <CarbonTokenizationCard 
+            minted={1250} 
+            pending={340} 
+            transactions={[
+              { id: '2024-001', status: 'success', hash: '0x123...abc' },
+              { id: '2024-002', status: 'pending', hash: '0x456...def' },
+              { id: '2024-003', status: 'success', hash: '0x789...ghi' },
+            ]} 
+          />
+        </div>
+        <div className="h-full">
+          <RecentTradesCard />
+        </div>
+      </div>
+
+      {/* 4. Farmer Portfolio Table */}
+      <FarmTable farms={farmsListData} />
     </div>
   );
 }

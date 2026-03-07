@@ -12,10 +12,10 @@ function ImpactRing({ value, max, label, color }: { value: number; max: number; 
   const offset = circumference - (pct / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative" style={{ width: 120, height: 120 }}>
+    <div className="flex flex-col items-center group">
+      <div className="relative transform transition-transform duration-500 group-hover:scale-110" style={{ width: 120, height: 120 }}>
         <svg width={120} height={120} className="-rotate-90">
-          <circle cx={60} cy={60} r={radius} fill="none" stroke="#1f2937" strokeWidth={8} />
+          <circle cx={60} cy={60} r={radius} fill="none" stroke="#f3f4f6" strokeWidth={8} />
           <circle
             cx={60} cy={60} r={radius} fill="none"
             stroke={color} strokeWidth={8} strokeLinecap="round"
@@ -24,10 +24,10 @@ function ImpactRing({ value, max, label, color }: { value: number; max: number; 
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xl font-bold text-white">{value.toFixed(1)}</span>
+          <span className="text-xl font-bold text-gray-900">{value.toFixed(1)}</span>
         </div>
       </div>
-      <p className="text-gray-400 text-sm mt-2">{label}</p>
+      <p className="text-gray-500 font-medium text-sm mt-3 text-center">{label}</p>
     </div>
   );
 }
@@ -70,62 +70,62 @@ export default function ImpactReportPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Impact Report</h1>
-        <p className="text-gray-400 mt-1">
+        <h1 className="text-3xl font-bold text-gray-900">Impact Report</h1>
+        <p className="text-gray-600 mt-1">
           ESG impact summary for {profile?.displayName || 'your organization'}
         </p>
       </div>
 
       {/* Impact Rings */}
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 mb-8">
-        <h3 className="text-lg font-semibold text-white mb-6 text-center">Environmental Impact</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <ImpactRing value={totalCredits} max={100} label="tCO₂e Offset" color="#22c55e" />
-          <ImpactRing value={treesEquivalent} max={5000} label="Trees Equivalent" color="#16a34a" />
-          <ImpactRing value={carKmAvoided / 1000} max={500} label="1000 km Avoided" color="#3b82f6" />
-          <ImpactRing value={householdsSupported} max={20} label="Households Supported" color="#a855f7" />
+      <div className="bg-white rounded-2xl p-8 mb-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+        <h3 className="text-lg font-bold text-gray-900 mb-8 text-center uppercase tracking-wide opacity-80">Environmental Impact Realized</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <ImpactRing value={totalCredits} max={100} label="tCO₂e Offset" color="#16a34a" /> {/* green-600 */}
+          <ImpactRing value={treesEquivalent} max={5000} label="Trees Equivalent" color="#059669" /> {/* emerald-600 */}
+          <ImpactRing value={carKmAvoided / 1000} max={500} label="1000 km Avoided" color="#2563eb" /> {/* blue-600 */}
+          <ImpactRing value={householdsSupported} max={20} label="Households Supported" color="#9333ea" /> {/* purple-600 */}
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
           { label: 'Total Credits Offset', value: `${totalCredits.toFixed(2)} tCO₂e`, icon: <FiTrendingUp />, color: 'green' },
           { label: 'Total Investment', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: <FiTarget />, color: 'blue' },
           { label: 'Avg Price/Credit', value: `₹${avgPricePerCredit.toFixed(0)}`, icon: <FiGlobe />, color: 'purple' },
           { label: 'Transactions', value: totalTransactions, icon: <FiAward />, color: 'yellow' },
         ].map((m) => (
-          <div key={m.label} className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <div className={`text-${m.color}-400 mb-2`}>{m.icon}</div>
-            <p className="text-2xl font-bold text-white">{m.value}</p>
-            <p className="text-sm text-gray-400">{m.label}</p>
+          <div key={m.label} className={`bg-white border-l-4 border-${m.color}-500 rounded-xl p-6 shadow-sm`}>
+            <div className={`text-${m.color}-600 mb-3 text-xl bg-${m.color}-50 w-10 h-10 rounded-lg flex items-center justify-center`}>{m.icon}</div>
+            <p className="text-3xl font-bold text-gray-900">{m.value}</p>
+            <p className="text-sm text-gray-500 font-medium mt-1">{m.label}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Monthly Breakdown */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Monthly Activity</h3>
+        <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Monthly Activity</h3>
           {months.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-xl border border-gray-100 border-dashed">
               <p>No activity yet</p>
               <p className="text-sm mt-1">Purchase credits to see your monthly impact</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {months.map(([month, data]) => {
                 const maxCredits = Math.max(...months.map(([, d]) => d.credits));
                 const barWidth = maxCredits > 0 ? (data.credits / maxCredits) * 100 : 0;
                 return (
                   <div key={month}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">{month}</span>
-                      <span className="text-white font-medium">{data.credits.toFixed(2)} tCO₂e</span>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-gray-600 font-medium">{month}</span>
+                      <span className="text-gray-900 font-bold">{data.credits.toFixed(2)} tCO₂e</span>
                     </div>
-                    <div className="w-full bg-gray-800 rounded-full h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-2.5">
                       <div
-                        className="bg-green-500 h-2 rounded-full transition-all duration-700"
+                        className="bg-green-600 h-2.5 rounded-full transition-all duration-700 shadow-sm"
                         style={{ width: `${barWidth}%` }}
                       />
                     </div>
@@ -137,29 +137,29 @@ export default function ImpactReportPage() {
         </div>
 
         {/* Transaction History */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Transaction History</h3>
+        <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Transaction History</h3>
           {!transactions || transactions.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-xl border border-gray-100 border-dashed">
               <p>No transactions recorded</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+            <div className="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
               {transactions.map((txn: any, idx: number) => (
-                <div key={txn.id || idx} className="flex justify-between items-center p-3 bg-gray-800 rounded-lg">
+                <div key={txn.id || idx} className="flex justify-between items-center p-4 bg-gray-50 border border-gray-100 rounded-xl hover:bg-gray-100 transition">
                   <div>
-                    <p className="text-white text-sm font-medium">{txn.credits?.toFixed(2)} tCO₂e</p>
-                    <p className="text-gray-500 text-xs">
+                    <p className="text-gray-900 text-sm font-bold">{txn.credits?.toFixed(2)} tCO₂e</p>
+                    <p className="text-gray-500 text-xs mt-0.5 font-medium">
                       {txn.createdAt ? new Date(txn.createdAt).toLocaleDateString('en-IN', {
                         day: 'numeric', month: 'short', year: 'numeric'
                       }) : 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-green-400 text-sm font-semibold">
+                    <p className="text-green-600 text-sm font-bold">
                       ₹{txn.totalPrice?.toLocaleString('en-IN')}
                     </p>
-                    <p className="text-gray-600 text-xs font-mono">
+                    <p className="text-gray-400 text-xs font-mono mt-0.5">
                       #{txn.id?.slice(-8) || idx}
                     </p>
                   </div>
@@ -172,16 +172,21 @@ export default function ImpactReportPage() {
 
       {/* ESG Certificate */}
       {totalCredits > 0 && (
-        <div className="mt-8 bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-500/20 rounded-2xl p-8 text-center">
-          <FiAward className="h-12 w-12 text-green-400 mx-auto mb-4" />
-          <h3 className="text-2xl font-bold text-white mb-2">ESG Offset Certificate</h3>
-          <p className="text-gray-300 mb-4">
-            {profile?.displayName || 'Your Organization'} has offset{' '}
-            <span className="text-green-400 font-bold">{totalCredits.toFixed(2)} tCO₂e</span> of carbon emissions through verified Indian agricultural credits.
-          </p>
-          <p className="text-gray-500 text-sm">
-            Equivalent to planting {Math.round(treesEquivalent)} trees or avoiding {(carKmAvoided / 1000).toFixed(0)}k km of car travel.
-          </p>
+        <div className="mt-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-center shadow-lg text-white relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+          <div className="relative z-10">
+            <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                <FiAward className="h-10 w-10 text-white" />
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-2">ESG Offset Certificate</h3>
+            <p className="text-green-50 mb-6 text-lg max-w-2xl mx-auto leading-relaxed opacity-90">
+              {profile?.displayName || 'Your Organization'} has offset{' '}
+              <span className="text-white font-extrabold text-xl bg-white/20 px-2 rounded">{totalCredits.toFixed(2)} tCO₂e</span> of carbon emissions through verified Indian agricultural credits.
+            </p>
+            <p className="text-green-100 text-sm font-medium bg-white/10 inline-block px-4 py-2 rounded-full backdrop-blur-sm">
+              Equivalent to planting {Math.round(treesEquivalent)} trees or avoiding {(carKmAvoided / 1000).toFixed(0)}k km of car travel.
+            </p>
+          </div>
         </div>
       )}
     </div>

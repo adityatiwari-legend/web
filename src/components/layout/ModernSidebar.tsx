@@ -13,19 +13,21 @@ import {
   Settings,
   Leaf,
   LogOut,
-  X
+  X,
+  Droplets,
+  Activity,
+  Award,
 } from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 
 const sidebarLinks = [
   { href: '/farmer/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/farmer/farm-profile', label: 'Farm Profiles', icon: Sprout },
-  { href: '/farmer/carbon-report', label: 'Carbon Reports', icon: Wind },
-  { href: '/farmer/profit-report', label: 'Profit Insights', icon: TrendingUp },
-  { href: '/farmer/sustainability', label: 'Credit Marketplace', icon: ShoppingCart },
-  { href: '#', label: 'Analytics', icon: PieChart },
-  { href: '#', label: 'Messages', icon: MessageSquare },
-  { href: '#', label: 'Settings', icon: Settings },
+  { href: '/farmer/irrigation', label: 'Irrigation AI', icon: Droplets },
+  { href: '/farmer/sensors', label: 'Live Sensors', icon: Activity },
+  { href: '/farmer/carbon-report', label: 'Carbon Credits', icon: Wind },
+  { href: '/farmer/farm-profile', label: 'Farm Data', icon: Sprout },
+  { href: '/farmer/sustainability', label: 'Green Score', icon: Award },
+  { href: '/farmer/settings', label: 'Settings', icon: Settings },
 ];
 
 interface ModernSidebarProps {
@@ -37,9 +39,6 @@ export default function ModernSidebar({ isOpen, onClose }: ModernSidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
   
-  // Prevent body scroll when sidebar is open on mobile
-  // useEffect(() => { ... }, [isOpen]) - omitted for simplicity, but good practice
-
   return (
     <>
       {/* Mobile Overlay */}
@@ -50,72 +49,84 @@ export default function ModernSidebar({ isOpen, onClose }: ModernSidebarProps) {
         onClick={onClose}
       />
 
-      <aside className={`w-64 min-h-screen bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col fixed left-0 top-0 bottom-0 z-50 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="p-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2" { ...(isOpen ? { onClick: onClose } : {})}>
-            <div className="bg-green-500 p-2 rounded-xl">
-              <Leaf className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-500">
-              KrishiCarbon
-            </span>
-          </Link>
+      <aside className={`
+        fixed left-0 top-0 bottom-0 z-50 
+        flex flex-col items-center py-6
+        transition-transform duration-300 ease-in-out
+        w-64 lg:w-[80px]
+        bg-gradient-to-b from-[#38B26D] to-[#2F9E5B]
+        text-white shadow-xl lg:shadow-none
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Logo Section */}
+        <div className="mb-8 flex flex-col items-center gap-2">
+          <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+            <Leaf className="h-8 w-8 text-white" />
+          </div>
+          {/* Mobile Only Label */}
+          <span className="lg:hidden font-bold text-xl">KrishiCarbon</span>
           
-          {/* Close button for mobile */}
           <button 
             onClick={onClose}
-            className="lg:hidden p-1 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg"
+            className="lg:hidden absolute top-4 right-4 p-1 text-white/80 hover:text-white"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+        {/* Navigation */}
+        <nav className="flex-1 w-full px-3 space-y-4 overflow-y-auto no-scrollbar flex flex-col items-center">
           {sidebarLinks.map((link) => {
-            // just use exact match or simple startsWith logic
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== '#' && pathname.startsWith(link.href));
             const Icon = link.icon;
+            
             return (
               <Link
                 key={link.label}
                 href={link.href}
-                onClick={onClose} // Close sidebar on navigation on mobile
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                onClick={onClose}
+                className={`
+                  relative group flex items-center justify-center
+                  w-12 h-12 lg:w-12 lg:h-12 rounded-2xl transition-all duration-200
+                  ${isActive 
+                    ? 'bg-white text-[#38B26D] shadow-lg translate-y-[-2px]' 
+                    : 'text-white/70 hover:bg-white/10 hover:text-white hover:translate-y-[-2px]'
+                  }
+                `}
+                title={link.label}
               >
-                <Icon className={`h-5 w-5 ${isActive ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`} />
-                {link.label}
+                <Icon className="h-6 w-6" />
+                
+                {/* Mobile Label */}
+                <span className="lg:hidden ml-4 font-medium whitespace-nowrap absolute left-14 bg-white text-[#38B26D] px-3 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                  {link.label}
+                </span>
+
+                {/* Desktop Tooltip */}
+                <span className="hidden lg:block absolute left-14 px-3 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                  {link.label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
-      {/* Bottom Upgrade Card */}
-      <div className="p-4 mx-4 mb-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/10 rounded-2xl border border-green-100 dark:border-green-500/20 shadow-sm">
-        <div className="mb-3">
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Pro Plan</h4>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Get advanced analytics & premium support</p>
-        </div>
-        <button className="w-full bg-green-600 hover:bg-green-700 text-white text-xs font-semibold py-2 rounded-lg transition-colors shadow-sm">
-          Upgrade Now
-        </button>
-      </div>
+        {/* User Profile Avatar */}
+        <div className="mt-auto pt-4 border-t border-white/10 w-full flex flex-col items-center gap-4">
+           {/* Placeholder Avatar */}
+           <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold border-2 border-white/30 cursor-pointer hover:border-white transition-colors">
+             U
+           </div>
 
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800">
-        <button
-          onClick={logout}
-          className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
-        >
-          <LogOut className="h-5 w-5" />
-          Logout
-        </button>
-      </div>
-    </aside>
+          <button
+            onClick={logout}
+            className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+            title="Logout"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
+        </div>
+      </aside>
     </>
   );
 }

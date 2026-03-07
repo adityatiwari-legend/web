@@ -43,32 +43,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <Leaf className="h-10 w-10 text-green-500" />
-            <span className="text-3xl font-bold text-white">
-              Krishi<span className="text-green-500">Carbon</span>
+            <div className="bg-[#38B26D] p-2 rounded-xl text-white">
+              <Leaf className="h-6 w-6" />
+            </div>
+            <span className="text-3xl font-bold text-[#1F2937]">
+              Krishi<span className="text-[#38B26D]">Carbon</span>
             </span>
           </Link>
-          <p className="text-gray-400 mt-2">Sign in to your account</p>
+          <p className="text-[#6B7280] mt-2">Sign in to your account</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
+        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 border border-gray-100">
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <label className="block text-sm font-medium text-[#1F2937] mb-2">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#38B26D] focus:ring-1 focus:ring-[#38B26D] transition"
                   placeholder="farmer@example.com"
                   required
                 />
@@ -77,21 +79,21 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+              <label className="block text-sm font-medium text-[#1F2937] mb-2">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-12 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-12 py-3 text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#38B26D] focus:ring-1 focus:ring-[#38B26D] transition"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -102,7 +104,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-3 rounded-lg font-semibold transition"
+              className="w-full bg-[#38B26D] hover:bg-[#2F9E5B] shadow-lg shadow-[#38B26D]/20 disabled:opacity-50 text-white py-3 rounded-xl font-semibold transition-all hover:translate-y-[-2px]"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -110,16 +112,16 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center my-6">
-            <div className="flex-1 border-t border-gray-700" />
-            <span className="px-4 text-gray-500 text-sm">or</span>
-            <div className="flex-1 border-t border-gray-700" />
+            <div className="flex-1 border-t border-gray-100" />
+            <span className="px-4 text-gray-400 text-sm">or</span>
+            <div className="flex-1 border-t border-gray-100" />
           </div>
 
           {/* Google */}
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-3 rounded-lg font-medium transition flex items-center justify-center gap-3"
+            className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-[#1F2937] py-3 rounded-xl font-medium transition flex items-center justify-center gap-3 shadow-sm"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -131,9 +133,9 @@ export default function LoginPage() {
           </button>
 
           {/* Register link */}
-          <p className="text-center text-gray-400 mt-6">
+          <p className="text-center text-[#6B7280] mt-6">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-green-500 hover:text-green-400 font-medium">
+            <Link href="/register" className="text-[#38B26D] hover:text-[#2F9E5B] font-medium hover:underline">
               Sign up
             </Link>
           </p>
