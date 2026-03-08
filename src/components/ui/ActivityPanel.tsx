@@ -1,6 +1,8 @@
 'use client';
 
-import { Sprout, ShoppingBag, Leaf, UserPlus, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Sprout, ShoppingBag, Leaf, UserPlus, ArrowRight, X, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getTransactions, getCarbonReports } from '@/lib/api';
 
@@ -17,7 +19,17 @@ function getRelativeTime(dateStr: string): string {
   return `${diffDay}d ago`;
 }
 
-const defaultActivities = [
+interface Activity {
+  id: number;
+  type: string;
+  message: string;
+  detail: string;
+  time: string;
+  icon: typeof Sprout;
+  color: string;
+}
+
+const defaultActivities: Activity[] = [
   {
     id: 1,
     type: 'registration',
@@ -64,6 +76,9 @@ const colorMap: Record<string, string> = {
 };
 
 export default function ActivityPanel() {
+  const [showAll, setShowAll] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+
   const { data: transactions } = useQuery({
     queryKey: ['transactions'],
     queryFn: () => getTransactions().then((r) => r.data.data).catch(() => null),
@@ -75,11 +90,11 @@ export default function ActivityPanel() {
   });
 
   // Build dynamic activities from real data
-  const activities = (() => {
-    const items: typeof defaultActivities = [];
+  const allActivities = (() => {
+    const items: Activity[] = [];
     
     if (carbonReports && carbonReports.length > 0) {
-      carbonReports.slice(0, 2).forEach((report: any, i: number) => {
+      carbonReports.forEach((report: any, i: number) => {
         items.push({
           id: i + 100,
           type: 'batch',
@@ -93,7 +108,7 @@ export default function ActivityPanel() {
     }
 
     if (transactions && transactions.length > 0) {
-      transactions.slice(0, 2).forEach((txn: any, i: number) => {
+      transactions.forEach((txn: any, i: number) => {
         items.push({
           id: i + 200,
           type: 'purchase',
@@ -106,43 +121,95 @@ export default function ActivityPanel() {
       });
     }
 
-    return items.length > 0 ? items.slice(0, 4) : defaultActivities;
+    return items.length > 0 ? items : defaultActivities;
   })();
+
+  const displayedActivities = showAll ? allActivities : allActivities.slice(0, 4);
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform h-full">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-medium text-[#1F2937]">Recent Activity</h3>
-        <button className="text-xs font-semibold text-[#38B26D] hover:underline">View All</button>
+    <>
+      <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-base font-bold text-[#1F2937]">Recent Activity</h3>
+          {allActivities.length > 4 && (
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="text-xs font-semibold text-[#38B26D] hover:underline"
+            >
+              {showAll ? 'Show Less' : `View All (${allActivities.length})`}
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          {displayedActivities.map((activity) => {
+            const Icon = activity.icon;
+            return (
+              <button
+                key={activity.id}
+                onClick={() => setSelectedActivity(activity)}
+                className="flex gap-3.5 group w-full text-left rounded-xl hover:bg-gray-50 p-1.5 -m-1.5 transition-colors"
+              >
+                <div className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center ${colorMap[activity.color]}`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <p className="text-sm font-medium text-[#1F2937] whitespace-nowrap overflow-hidden text-ellipsis">
+                    {activity.message}
+                  </p>
+                  <p className="text-xs text-[#6B7280]">{activity.detail}</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">{activity.time}</p>
+                </div>
+                <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="space-y-6">
-        {activities.map((activity) => {
-          const Icon = activity.icon;
-          return (
-            <div key={activity.id} className="flex gap-4 group">
-              <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${colorMap[activity.color]}`}>
-                <Icon className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0 pt-0.5">
-                <p className="text-sm font-medium text-[#1F2937] whitespace-nowrap overflow-hidden text-ellipsis">
-                  {activity.message}
-                </p>
-                <p className="text-xs text-[#6B7280] mb-0.5">{activity.detail}</p>
-                <p className="text-xs text-gray-400">{activity.time}</p>
-              </div>
-              <div className="self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <ArrowRight className="w-4 h-4 text-gray-400" />
-              </div>
+      {/* Activity Detail Modal */}
+      {selectedActivity && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={() => setSelectedActivity(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <h3 className="text-base font-bold text-[#1F2937]">Activity Detail</h3>
+              <button onClick={() => setSelectedActivity(null)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                <X className="h-5 w-5 text-gray-400" />
+              </button>
             </div>
-          );
-        })}
-      </div>
-      
-      <div className="mt-6 pt-6 border-t border-gray-100">
-        <button className="w-full py-2.5 px-4 bg-[#38B26D]/10 text-[#38B26D] text-sm font-medium rounded-xl hover:bg-[#38B26D]/20 transition-colors">
-          View Activity Log
-        </button>
-      </div>
-    </div>
+            <div className="p-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colorMap[selectedActivity.color]}`}>
+                  <selectedActivity.icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#1F2937]">{selectedActivity.message}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Clock className="h-3 w-3 text-gray-400" />
+                    <span className="text-xs text-gray-400">{selectedActivity.time}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-sm text-gray-600">{selectedActivity.detail}</p>
+              </div>
+              <div className="text-xs text-gray-400">
+                <p>Type: <span className="capitalize font-medium text-gray-500">{selectedActivity.type}</span></p>
+              </div>
+              <button
+                onClick={() => setSelectedActivity(null)}
+                className="w-full py-2.5 bg-[#38B26D]/10 text-[#38B26D] text-sm font-medium rounded-xl hover:bg-[#38B26D]/20 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
 }
