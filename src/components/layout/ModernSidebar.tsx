@@ -37,7 +37,7 @@ interface ModernSidebarProps {
 
 export default function ModernSidebar({ isOpen, onClose }: ModernSidebarProps) {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { logout, profile } = useAuth();
   
   return (
     <>
@@ -115,7 +115,7 @@ export default function ModernSidebar({ isOpen, onClose }: ModernSidebarProps) {
         <div className="mt-auto pt-4 border-t border-white/10 w-full flex flex-col items-center gap-4">
            {/* Placeholder Avatar */}
            <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold border-2 border-white/30 cursor-pointer hover:border-white transition-colors">
-             U
+             {profile?.displayName?.charAt(0)?.toUpperCase() || 'U'}
            </div>
 
           <button

@@ -2,14 +2,29 @@
 
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 
-const trades = [
-  { id: 1, type: 'sell', asset: 'Wheat Carbon', amount: '500 KG', price: '$12.50', time: '10m ago', status: 'Completed' },
-  { id: 2, type: 'buy', asset: 'Rice Methane', amount: '200 KG', price: '$18.00', time: '1h ago', status: 'Processing' },
-  { id: 3, type: 'sell', asset: 'Forestry', amount: '1000 KG', price: '$22.00', time: '3h ago', status: 'Completed' },
-  { id: 4, type: 'sell', asset: 'Compost', amount: '350 KG', price: '$8.75', time: '5h ago', status: 'Completed' },
+interface Trade {
+  id: number;
+  type: string;
+  asset: string;
+  amount: string;
+  price: string;
+  time: string;
+  status: string;
+}
+
+const defaultTrades: Trade[] = [
+  { id: 1, type: 'sell', asset: 'Wheat Carbon', amount: '500 KG', price: '₹1,250', time: '10m ago', status: 'Completed' },
+  { id: 2, type: 'buy', asset: 'Rice Methane', amount: '200 KG', price: '₹1,800', time: '1h ago', status: 'Processing' },
+  { id: 3, type: 'sell', asset: 'Forestry', amount: '1000 KG', price: '₹2,200', time: '3h ago', status: 'Completed' },
+  { id: 4, type: 'sell', asset: 'Compost', amount: '350 KG', price: '₹875', time: '5h ago', status: 'Completed' },
 ];
 
-export default function RecentTradesCard() {
+interface RecentTradesCardProps {
+  trades?: Trade[] | null;
+}
+
+export default function RecentTradesCard({ trades }: RecentTradesCardProps) {
+  const displayTrades = trades && trades.length > 0 ? trades : defaultTrades;
   return (
     <div className="bg-white rounded-2xl p-6 shadow-[0_8px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform h-full">
       <div className="flex items-center justify-between mb-6">
@@ -29,7 +44,7 @@ export default function RecentTradesCard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {trades.map((trade) => (
+            {displayTrades.map((trade) => (
               <tr key={trade.id} className="hover:bg-gray-50/50 transition-colors">
                 <td className="px-4 py-3">
                   <div className={`flex items-center gap-2 ${trade.type === 'sell' ? 'text-red-500' : 'text-green-500'}`}>

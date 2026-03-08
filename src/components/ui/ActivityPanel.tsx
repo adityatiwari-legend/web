@@ -1,8 +1,23 @@
 'use client';
 
 import { Sprout, ShoppingBag, Leaf, UserPlus, ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getTransactions, getCarbonReports } from '@/lib/api';
 
-const activities = [
+function getRelativeTime(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMin = Math.round(diffMs / 60000);
+  if (diffMin < 1) return 'just now';
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHr = Math.round(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h ago`;
+  const diffDay = Math.round(diffHr / 24);
+  return `${diffDay}d ago`;
+}
+
+const defaultActivities = [
   {
     id: 1,
     type: 'registration',
@@ -49,6 +64,50 @@ const colorMap: Record<string, string> = {
 };
 
 export default function ActivityPanel() {
+  const { data: transactions } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: () => getTransactions().then((r) => r.data.data).catch(() => null),
+  });
+
+  const { data: carbonReports } = useQuery({
+    queryKey: ['carbonReports'],
+    queryFn: () => getCarbonReports().then((r) => r.data.data).catch(() => null),
+  });
+
+  // Build dynamic activities from real data
+  const activities = (() => {
+    const items: typeof defaultActivities = [];
+    
+    if (carbonReports && carbonReports.length > 0) {
+      carbonReports.slice(0, 2).forEach((report: any, i: number) => {
+        items.push({
+          id: i + 100,
+          type: 'batch',
+          message: 'Carbon report generated',
+          detail: `${report.cropType || 'Farm'} — ${report.estimatedCredits?.toFixed(1) || '0'} credits`,
+          time: report.createdAt ? getRelativeTime(report.createdAt) : '1 day ago',
+          icon: Leaf,
+          color: 'amber',
+        });
+      });
+    }
+
+    if (transactions && transactions.length > 0) {
+      transactions.slice(0, 2).forEach((txn: any, i: number) => {
+        items.push({
+          id: i + 200,
+          type: 'purchase',
+          message: 'Credits purchased',
+          detail: `${txn.credits?.toFixed(1) || '0'} tCO₂e for ₹${txn.totalPrice?.toLocaleString('en-IN') || '0'}`,
+          time: txn.createdAt ? getRelativeTime(txn.createdAt) : '5 hours ago',
+          icon: ShoppingBag,
+          color: 'blue',
+        });
+      });
+    }
+
+    return items.length > 0 ? items.slice(0, 4) : defaultActivities;
+  })();
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-[0_8px_20px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-transform h-full">
       <div className="flex items-center justify-between mb-6">

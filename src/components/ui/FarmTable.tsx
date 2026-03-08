@@ -24,13 +24,13 @@ export default function FarmTable({ farms }: FarmTableProps) {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-      <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <div className="p-6 border-b border-gray-100 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Top Carbon Producing Farms</h3>
-          <p className="text-sm text-gray-500 mt-0.5">Performance leaders this season</p>
+          <h3 className="text-lg font-bold text-[#1F2937]">Top Carbon Producing Farms</h3>
+          <p className="text-sm text-[#6B7280] mt-0.5">Performance leaders this season</p>
         </div>
-        <button className="p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors">
+        <button className="p-2 hover:bg-gray-50 rounded-xl transition-colors">
           <MoreHorizontal className="h-5 w-5 text-gray-400" />
         </button>
       </div>
@@ -38,50 +38,50 @@ export default function FarmTable({ farms }: FarmTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-50/50 dark:bg-gray-800/30">
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Farm Name</th>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Crop</th>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Land Area</th>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Credits Generated</th>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Carbon Reduction</th>
-              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Est. Earnings</th>
+            <tr className="bg-gray-50/50">
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Farm Name</th>
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Crop</th>
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Land Area</th>
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Credits Generated</th>
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Carbon Reduction</th>
+              <th className="px-6 py-4 text-xs font-semibold text-[#6B7280] uppercase tracking-wider">Est. Earnings</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+          <tbody className="divide-y divide-gray-100">
             {displayFarms.map((farm) => (
-              <tr key={farm.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
+              <tr key={farm.id} className="hover:bg-gray-50 transition-colors group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <div className="h-9 w-9 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
                       <Sprout className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{farm.name}</p>
+                      <p className="text-sm font-medium text-[#1F2937] group-hover:text-emerald-600 transition-colors">{farm.name}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 capitalize">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-[#1F2937] capitalize">
                     {farm.crop}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{farm.landArea} Ac</span>
+                  <span className="text-sm text-[#6B7280]">{farm.landArea} Ac</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">{farm.creditsGenerated}</span>
-                    <span className="text-xs text-gray-500">Credits</span>
+                    <span className="text-sm font-bold text-[#1F2937]">{farm.creditsGenerated}</span>
+                    <span className="text-xs text-[#6B7280]">Credits</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                  <div className="flex items-center gap-1.5 text-emerald-600">
                     <TrendingUp className="h-3.5 w-3.5" />
                     <span className="text-sm font-medium">{farm.carbonReduction}%</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">
+                  <span className="text-sm font-bold text-[#1F2937]">
                     ₹{farm.estimatedEarnings.toLocaleString('en-IN')}
                   </span>
                 </td>

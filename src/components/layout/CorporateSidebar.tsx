@@ -8,6 +8,7 @@ import {
   Package,
   ShoppingCart,
   FileBarChart,
+  Settings,
   LogOut,
   X
 } from 'lucide-react';
@@ -18,6 +19,7 @@ const corporateLinks = [
   { href: '/corporate/batches', label: 'Credit Batches', icon: Package },
   { href: '/corporate/purchase', label: 'Purchase', icon: ShoppingCart },
   { href: '/corporate/impact', label: 'Impact Report', icon: FileBarChart },
+  { href: '/corporate/settings', label: 'Settings', icon: Settings },
 ];
 
 interface CorporateSidebarProps {
