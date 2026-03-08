@@ -27,7 +27,7 @@ interface AuthContextType {
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, displayName: string, role: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName: string, role: string, phone?: string, region?: string) => Promise<void>;
   signInWithGoogle: (role?: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -40,12 +40,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async () => {
+  const fetchProfile = async (): Promise<UserProfile | null> => {
     try {
       const response = await getProfile();
-      setProfile(response.data.data);
+      const data = response.data.data;
+      setProfile(data);
+      return data;
     } catch {
       setProfile(null);
+      return null;
     }
   };
 
@@ -68,10 +71,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await fetchProfile();
   };
 
-  const signUp = async (email: string, password: string, displayName: string, role: string) => {
+  const signUp = async (email: string, password: string, displayName: string, role: string, phone?: string, region?: string) => {
     const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
     // Register in backend
-    await registerUser({ displayName, role });
+    await registerUser({ displayName, role, phone, region });
     await fetchProfile();
   };
 
@@ -79,9 +82,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const provider = new GoogleAuthProvider();
     const cred = await signInWithPopup(firebaseAuth, provider);
     // Try to get profile — if not found, register
-    try {
-      await fetchProfile();
-    } catch {
+    const existingProfile = await fetchProfile();
+    if (!existingProfile) {
       await registerUser({
         displayName: cred.user.displayName || 'User',
         role,

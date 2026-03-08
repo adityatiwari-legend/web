@@ -31,7 +31,7 @@ function RegisterForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signUp(form.email, form.password, form.displayName, form.role);
+      await signUp(form.email, form.password, form.displayName, form.role, form.phone, form.region);
       toast.success('Account created!');
       router.push(form.role === 'corporate' ? '/corporate/dashboard' : '/farmer/dashboard');
     } catch (error: any) {
